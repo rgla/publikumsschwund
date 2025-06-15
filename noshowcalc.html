@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktive Umsatzberechnung Werder Bremen</title>
+    <style>
+    /* Hier ist das CSS aus der Version, die funktionierte */
+    .interactive-table-container {
+        font-family: Arial, sans-serif;
+        max-width: 700px;
+        margin: 20px auto;
+        background-color: #2e7d32; /* Dunkelgrün wie im Bild */
+        color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        padding: 20px;
+    }
+
+    .interactive-table-container h2,
+    .interactive-table-container h3 {
+        text-align: center;
+        color: #ffffff;
+        margin-bottom: 10px;
+    }
+
+    .interactive-table-container h3 {
+        font-size: 1em;
+        margin-top: 0;
+    }
+
+    .fixed-value-row {
+        background-color: #28602c; /* Etwas dunkler als der Hintergrund */
+        padding: 10px 20px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    .fixed-value-row .label {
+        flex-grow: 1;
+    }
+
+    .fixed-value-row .value {
+        text-align: right;
+        min-width: 100px;
+    }
+
+    .interactive-table-container table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .interactive-table-container th,
+    .interactive-table-container td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #4caf50; /* Etwas helleres Grün für Trennlinien */
+    }
+
+    .interactive-table-container th {
+        background-color: #28602c; /* Etwas dunkler als der Hintergrund für Header */
+        font-weight: bold;
+    }
+
+    .interactive-table-container tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .interactive-table-container input[type="number"] {
+        width: 80px;
+        padding: 8px;
+        border: 1px solid #4caf50;
+        border-radius: 4px;
+        background-color: #388e3c;
+        color: #ffffff;
+        text-align: right;
+        -moz-appearance: textfield; /* Für Firefox, um Pfeile zu entfernen */
+    }
+
+    /* Entfernt die Pfeile für input type="number" in Webkit-Browsern (Chrome, Safari) */
+    .interactive-table-container input[type="number"]::-webkit-outer-spin-button,
+    .interactive-table-container input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .interactive-table-container td:last-child {
+        text-align: right;
+        font-weight: bold;
+        /* Anpassung für Darstellung großer Zahlen */
+        min-width: 150px; /* Erhöhen Sie dies, um mehr Platz zu schaffen */
+        white-space: nowrap; /* Verhindert Zeilenumbruch innerhalb der Zahl */
+        /* font-size: 0.9em; /* Optional, für kleinere Schrift */
+    }
+
+    /* Anpassung der Breite für die zweite Spalte ("Wert"), falls diese auch sehr große Zahlen enthält */
+    .interactive-table-container table td:nth-child(2) {
+        min-width: 100px; /* Um die Ausrichtung mit den Inputs zu gewährleisten */
+    }
+
+    .interactive-table-container span {
+        display: inline-block;
+        min-width: 80px; /* Um die Ausrichtung mit den Inputs zu gewährleisten */
+        text-align: left; /* Behält die Textausrichtung bei */
+    }
+
+    /* Responsive Anpassungen für Hochformat-Smartphones (optional, falls nicht schon perfekt) */
+    @media (max-width: 600px) {
+        .interactive-table-container {
+            padding: 15px;
+            margin: 10px;
+        }
+
+        .interactive-table-container th,
+        .interactive-table-container td {
+            padding: 8px 10px;
+            font-size: 0.85em;
+        }
+
+        .interactive-table-container h2 {
+            font-size: 1.2em;
+        }
+
+        .interactive-table-container h3 {
+            font-size: 0.9em;
+        }
+
+        /* Spaltenbreiten etwas anpassen, aber immer noch tabellarisch */
+        .interactive-table-container th:nth-child(1),
+        .interactive-table-container td:nth-child(1) {
+            width: 40%;
+        }
+
+        .interactive-table-container th:nth-child(2),
+        .interactive-table-container td:nth-child(2) {
+            width: 30%;
+        }
+
+        .interactive-table-container th:nth-child(3),
+        .interactive-table-container td:nth-child(3) {
+            width: 30%;
+            font-size: 0.8em; /* Noch kleinere Schrift für Gesamt */
+            min-width: 80px; /* Reduzierte Mindestbreite */
+        }
+        /* Wenn die feste Zeile der Stadiongröße immer noch nicht passt: */
+        .fixed-value-row {
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: 0.9em;
+        }
+        .fixed-value-row .label,
+        .fixed-value-row .value {
+            flex-basis: 100%;
+            text-align: left;
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <div class="interactive-table-container">
+        <h2>Werder Bremen und die 1. Liga</h2>
+        <h3>Simulation Einnahmeverluste bei Nicht-Besuch von Ticket-/Dauerkarteninhabern</h3>
+
+        <div class="fixed-value-row">
+            <span class="label">Durchschnittliche Stadiongröße Bundesliga 2024/25:</span>
+            <span class="value" id="stadionGroesse">39.658</span>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Beschreibung</th>
+                    <th>Wert</th>
+                    <th>Gesamt</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Nicht-Besucher:innen/Spiel (12%):</td>
+                    <td><span id="nichtBesucherProSpiel">0</span></td> <td></td>
+                </tr>
+                <tr>
+                    <td>Umsatz Gastro pro Besucher:</td>
+                    <td><input type="number" id="umsatzGastroProBesucher" value="25" min="0" step="0.01"> €</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Entgangener Erlös pro Spiel:</td>
+                    <td></td>
+                    <td id="entgangenerErloesProSpiel">0,00 €</td>
+                </tr>
+                <tr>
+                    <td>Heimspiele Werder Bremen:</td>
+                <td><span id="anzahlHeimspiele">18</span></td>
+                    <td id="gesamtErlosHeimspiele">0,00 €</td>
+                </tr>
+                <tr>
+                    <td>Spiele in der Bundesliga:</td>
+                <td><span id="anzahlBundesligaSpiele">306</span></td>
+                    <td id="gesamtErlosBundesliga">0,00 €</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const stadionGroesseSpan = document.getElementById('stadionGroesse');
+        const nichtBesucherProSpielSpan = document.getElementById('nichtBesucherProSpiel');
+        const umsatzGastroInput = document.getElementById('umsatzGastroProBesucher');
+        const entgangenerErloesProSpiel = document.getElementById('entgangenerErloesProSpiel');
+        const anzahlHeimspieleSpan = document.getElementById('anzahlHeimspiele');
+        const gesamtErlosHeimspiele = document.getElementById('gesamtErlosHeimspiele');
+        const anzahlBundesligaSpieleSpan = document.getElementById('anzahlBundesligaSpiele');
+        const gesamtErlosBundesliga = document.getElementById('gesamtErlosBundesliga');
+
+        // Feste Konstanten, basierend auf dem neuen Bild
+        // Sicherstellen, dass Tausenderpunkte beim Parsen entfernt werden
+        const DURCHSCHNITTLICHE_STADIONGROESSE = parseInt(stadionGroesseSpan.textContent.replace(/\./g, ''));
+        const PROZENTSATZ_NICHT_BESUCHER = 0.12; // 12% als Dezimalwert
+        const ANZAHL_HEIMPSIELE = parseInt(anzahlHeimspieleSpan.textContent); // 18
+        const ANZAHL_BUNDESLIGA_SPIELE = parseInt(anzahlBundesligaSpieleSpan.textContent); // 306
+
+        function calculateLoss() {
+            const umsatzProBesucher = parseFloat(umsatzGastroInput.value) || 0;
+
+            // Berechnung der Nicht-Besucher (gerundet)
+            const nichtBesucher = Math.round(DURCHSCHNITTLICHE_STADIONGROESSE * PROZENTSATZ_NICHT_BESUCHER);
+            nichtBesucherProSpielSpan.textContent = nichtBesucher.toLocaleString('de-DE');
+
+            // Entgangener Erlös pro Spiel (gerundet)
+            const erloesProSpiel = Math.round(nichtBesucher * umsatzProBesucher);
+            // Formatierung der Währung mit zwei Dezimalstellen (wie in der vorherigen funktionierenden Version)
+            entgangenerErloesProSpiel.textContent = erloesProSpiel.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            // NEU: Zusätzliche Rundung nach der Multiplikation, um Floating-Point-Fehler zu minimieren
+            // Hier war der potentielle Fehler! Multiplizieren mit der exakten Zahl und dann runden.
+            const erloesHeimspiele = Math.round(erloesProSpiel * ANZAHL_HEIMPSIELE);
+            gesamtErlosHeimspiele.textContent = erloesHeimspiele.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            const erloesBundesliga = Math.round(erloesProSpiel * ANZAHL_BUNDESLIGA_SPIELE);
+            gesamtErlosBundesliga.textContent = erloesBundesliga.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Initialer Aufruf und Event Listener bleiben gleich
+        calculateLoss();
+        umsatzGastroInput.addEventListener('input', calculateLoss);
+    });
+    </script>
+</body>
+</html>
